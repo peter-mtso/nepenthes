@@ -1,7 +1,7 @@
 class ScreenshotsController < ApplicationController
   def index
     if params[:distinct] == 'true'
-      @screenshots = Screenshot.group('data_hash').page(params[:page]).per(100)
+      @screenshots = Screenshot.group('data_hash').order('data').page(params[:page]).per(100)
     else
       @screenshots = Screenshot.order('data_hash').page(params[:page]).per(100)
     end
