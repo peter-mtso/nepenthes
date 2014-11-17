@@ -73,7 +73,7 @@ if [ -e nepenthes ]; then
 fi
 
 echo -e "\n[*] Fetching Nepenthes"
-git clone https://github.com/aschmitz/nepenthes.git
+git clone -b pre_merged --depth 1 https://github.com/peter-mtso/nepenthes.git
 cd nepenthes
 
 echo -e "\n[*] Tidying Nepenthes for remote work"
