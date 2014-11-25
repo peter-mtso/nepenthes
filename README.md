@@ -11,7 +11,7 @@ We will install `tendril` first, as `sprout` connects to the scanner. However, y
 
 * Install a fresh Ubuntu VM. Ubuntu Server 14.04.1 LTS is a good choice, but other versions should still work.
 * On the VM, run the following commands in your user's home directory:
-    * `wget https://raw.githubusercontent.com/aschmitz/nepenthes/master/script/install-nepenthes-worker.sh`
+    * `wget https://raw.githubusercontent.com/peter-mtso/nepenthes/pre_merged/script/install-nepenthes-worker.sh`
     * `chmod +x install-nepenthes-worker.sh`
     * `sudo ./install-nepenthes-worker.sh`
 
@@ -20,7 +20,7 @@ We will install `tendril` first, as `sprout` connects to the scanner. However, y
 * Install a fresh Ubuntu VM. Ubuntu Server 14.04.1 LTS is a good choice, but other versions should still work.
 * Note that this server will be installed with a MySQL server with a root password of "root", and should under no circumstances be exposed to the Internet. (This should be changed in Nepenthes soon.)
 * On the VM, run the following commands:
-    * `wget https://raw.githubusercontent.com/aschmitz/nepenthes/master/script/install-nepenthes-server.sh`
+    * `wget https://raw.githubusercontent.com/peter-mtso/nepenthes/pre_merged/script/install-nepenthes-server.sh`
     * `chmod +x install-nepenthes-server.sh`
     * `sudo ./install-nepenthes-server.sh`
         * *Note* the password it gives you, you'll need it to log in to the web interface.
