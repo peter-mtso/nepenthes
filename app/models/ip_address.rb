@@ -2,6 +2,7 @@ class IpAddress < ActiveRecord::Base
   belongs_to :region
   belongs_to :tag
   has_many :scans, :dependent => :destroy
+  has_many :multipass_scans, :dependent => :destroy
   has_many :ports, :dependent => :destroy
   has_many :nessus_results, :dependent => :delete_all
   attr_accessible :address, :tags
@@ -135,6 +136,16 @@ class IpAddress < ActiveRecord::Base
     scan = self.scans.new(:options => opts)
     scan.save!
     Sidekiq::Client.enqueue(ScannerWorker, scan.id, self.to_s, opts)
+  end
+
+  def queue_multipass_scan!(ports = (1..65536).to_a, opts = ['-Pn', '--max-retries=2', '-v', '-sS', '-T4'])
+    unless opts.kind_of?(Array)
+      throw 'opts must be an array.'
+    end
+
+    scan = self.multipass_scans.new(:ports => ports, :options => opts)
+    scan.save!
+    scan.enqueue!
   end
   
   def self.queue_many!(ips, opts = ['-Pn', '-p',
