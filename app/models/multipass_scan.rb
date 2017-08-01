@@ -40,6 +40,8 @@ class MultipassScan < ActiveRecord::Base
 
 
   def rescan!
+    return if self.ports.length == 0
+
     # spawn a child, so each scan's results are stored.
     # If you don't have this requirement, you could reuse this object.
     self.latest = false
