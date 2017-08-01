@@ -53,13 +53,22 @@ class MultipassScan < ActiveRecord::Base
   end
 
   def enqueue!
+    Sidekiq::Client.enqueue(MultipassScannerWorker, self.id, self.ip_address.to_s, ports_string, self.options)
+  end
+
+  # Queue a traditional scan, with version checking and all
+  # This will create the Port objects when processed.
+  def finalize!
+    self.ip_address.queue_scan!(['-Pn', '-p', ports_string, '-sV', '--version-light'])
+  end
+
+  def ports_string
     if self.ports.length == 65536
-      ports_string = '-'
+      '-'
       # hax
     else
-      ports_string = self.ports.join(',')
+      self.ports.join(',')
     end
-    Sidekiq::Client.enqueue(MultipassScannerWorker, self.id, self.ip_address.to_s, ports_string, self.options)
   end
 
 
