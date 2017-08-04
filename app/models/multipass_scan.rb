@@ -26,7 +26,7 @@ class MultipassScan < ActiveRecord::Base
       self.ports = []
       host.xpath('ports/port').each do |port|
         if port.at('state/@state').value == 'open'
-          self.ports << port['portid']
+          self.ports << port['portid'].to_i
         end
       end
 
@@ -63,13 +63,43 @@ class MultipassScan < ActiveRecord::Base
   end
 
   def ports_string
-    if self.ports.length == 65536
-      '-'
-      # hax
-    else
-      self.ports.join(',')
-    end
+    compress self.ports
   end
+
+
+  def self.compress x
+    output = []
+    current_base = nil
+    last = nil
+
+    out = lambda {
+      if current_base == last
+        output << "#{last}"
+      else
+        output << "#{current_base}-#{last}"
+      end
+    }
+
+    x.each do |q|
+      p = q.to_i
+      if current_base == nil
+        current_base = p
+        last = p
+        next
+      end
+      if p == last + 1
+        last = p
+      else
+        out.()
+        current_base = p
+        last = p
+      end
+    end
+
+    out.()
+    output.join(',')
+  end
+
 
 
 end
