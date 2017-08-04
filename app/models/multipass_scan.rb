@@ -63,7 +63,7 @@ class MultipassScan < ActiveRecord::Base
   end
 
   def ports_string
-    compress self.ports
+    MultipassScan.compress self.ports
   end
 
 
