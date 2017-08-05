@@ -6,7 +6,13 @@ class MultipassScannerWorker
   
   def perform(id, host, ports, opts)
     full_options = ['nmap', '-oX', '-', '-p', ports, opts, host].flatten
-    stdout_str, stderr_str, status = Open3.capture3(*full_options)
+    begin
+      stdout_str, stderr_str, status = Open3.capture3(*full_options)
+    rescue Errno::E2BIG
+      # probably the port list is too long -- we'll just do a full scan instead
+      new_options = ['nmap', '-oX', '-', '-p', '-', opts, host].flatten
+      stdout_str, stderr_str, status = Open3.capture3(*new_options)
+    end
     if status == 0
       Sidekiq::Client.enqueue(MultipassScannerResults, id, stdout_str, false)
     else

@@ -23,12 +23,17 @@ class MultipassScan < ActiveRecord::Base
       timeout = host.at('//taskend/@extrainfo[contains(., "timed out")]')
       self.timed_out = !!timeout
 
-      self.ports = []
+      open_ports = []
       host.xpath('ports/port').each do |port|
         if port.at('state/@state').value == 'open'
-          self.ports << port['portid'].to_i
+          open_ports << port['portid'].to_i
         end
       end
+
+      # intersection of original open ports and new ones.
+      # we need to do this for the cases where we had to fall back
+      # to a full scan because our ports list was too long
+      self.ports &= open_ports
 
     end
 
