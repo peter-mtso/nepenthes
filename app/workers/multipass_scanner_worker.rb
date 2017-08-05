@@ -6,13 +6,13 @@ class MultipassScannerWorker
   
   def perform(id, host, ports, opts)
     full_options = ['nmap', '-oX', '-', '-p', ports, opts, host].flatten
-    stdout_str, status = Open3.capture2(*full_options)
+    stdout_str, stderr_str, status = Open3.capture3(*full_options)
     if status == 0
       Sidekiq::Client.enqueue(MultipassScannerResults, id, stdout_str, false)
     else
       # nmap didn't finish properly (probably killed), try again later.
-      logger.info { "nmap died, status: #{status}" }
-      Sidekiq::Client.enqueue(MultipassScannerWorker, id, host, ports, opts)
+      # should this be a real error class?
+      raise "nmap died. status: #{status}, error: #{stderr_str}"
     end
   end
 end
