@@ -138,7 +138,7 @@ class IpAddress < ActiveRecord::Base
     Sidekiq::Client.enqueue(ScannerWorker, scan.id, self.to_s, opts)
   end
 
-  def queue_multipass_scan!(ports = (1..65536).to_a, opts = ['-Pn', '--max-retries=2', '-v', '-sS', '-T4'])
+  def queue_multipass_scan!(ports = (1..65535).to_a, opts = ['-Pn', '--max-retries=2', '-v', '-sS', '-T4'])
     unless opts.kind_of?(Array)
       throw 'opts must be an array.'
     end
