@@ -64,6 +64,8 @@ class MultipassScan < ActiveRecord::Base
   # Queue a traditional scan, with version checking and all
   # This will create the Port objects when processed.
   def finalize!
+    self.latest = false
+    self.save
     self.ip_address.queue_scan!(['-Pn', '-p', ports_string, '-sV', '--version-light'])
   end
 
